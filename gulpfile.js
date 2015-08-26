@@ -3,9 +3,11 @@ var gulp = require('gulp'),
 	jshint = require('gulp-jshint'),
 	minifycss = require('gulp-minify-css'),
 	rename = require('gulp-rename'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	tinypng = require('gulp-tinypng');
 
 var cssFiles = 'css/*.css',
+	imgfiles = 'img/*',
 	jsFiles = 'js/villa.js';
 
 gulp.task('css', function() {
@@ -29,6 +31,12 @@ gulp.task('js', function() {
 			extname: '.min.js'
 		}))
 		.pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('img', function() {
+	gulp.src(imgfiles)
+		.pipe(tinypng('8eNoFlUv4wHzam_8GleKHdhH2YFk9xAd'))
+		.pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('default', function() {

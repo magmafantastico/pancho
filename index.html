@@ -3,6 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Pancho</title>
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=yes, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
 	<script src="dist/js/villa.min.js"></script>
 	<link rel="stylesheet" href="dist/css/villa.min.css"/>
 	<!--[if lt IE 9]>
@@ -15,21 +17,190 @@
 </head>
 <body class="font-grey-900">
 
-<style>
-	.a .b {
-		height: 100px;
-		min-width: 16em;
-	}
-</style>
+<main>
 
+	<div class="hero">
 
-<div class="a flex child-flex child-grow-1 child-h-opacity-90 flex-wrap">
-	<div class="b red"></div>
-	<div class="b green"></div>
-	<div class="b blue"></div>
-	<div class="b deep-orange"></div>
-	<div class="b amber"></div>
-</div>
+		<style scoped="scoped">
+
+			.hero h1 {
+				font-weight: 100;
+			}
+
+			.hero .gallery {
+				overflow: hidden;
+				position: relative;
+				width: 100%;
+				height: 36em;
+			}
+
+			.hero .gallery .content {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+
+			.hero .gallery .content {
+				background-size: cover;
+				height: 100%;
+			}
+
+		</style>
+
+		<article id="hero-gallery" class="gallery">
+
+			<section class="content red current" style="background-image: url('dist/img/party01.jpeg');">
+
+				<style scoped="scoped">
+
+					.content {
+
+					}
+
+				</style>
+
+				<div class="image"></div>
+
+			</section>
+
+			<section class="content blue" style="background-image: url('dist/img/people03.jpeg');">
+
+				<style scoped="scoped">
+
+					.content {
+
+					}
+
+				</style>
+
+				<div class="image"></div>
+
+			</section>
+
+			<section class="content green" style="background-image: url('dist/img/tools01.jpeg');">
+
+				<style scoped="scoped">
+
+					.content {
+
+					}
+
+				</style>
+
+				<div class="image"></div>
+
+			</section>
+
+		</article>
+
+	</div>
+
+	<button id="btn">troca</button>
+
+</main>
+
+<script>
+
+	var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	// Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+	var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+	var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+	// At least Safari 3+: "[object HTMLElementConstructor]"
+	var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+	var isIE = /*@cc_on!@*/!!document.documentMode; // At least IE6
+
+	console.log('opera: ' + isOpera);
+	console.log('firefox: ' + isFirefox);
+	console.log('safari: ' + isSafari);
+	console.log('chrome: ' + isChrome);
+	console.log('ie: ' + isIE);
+
+	var i;
+
+	// gallery
+	var g = document.getElementById('hero-gallery');
+	var gWidth = g.offsetWidth;
+
+	// gallery elements
+	var gC = g.querySelectorAll('.content');
+
+	// size of gallery
+	var gCsize = gC.length;
+
+	var defineGalleryLefts = function() {
+		var e, l;
+
+		gWidth = g.offsetWidth;
+
+		for (i = gCsize; i--; ) {
+			e = gC[i];
+			e.style.left = (i * gWidth) + 'px';
+			if (gC[i].classList.contains('current'))
+				l = gC[i].style.left;
+		}
+
+		for (i = gCsize; i--; )
+			gC[i].style.transform = 'translateX(-' + l + ')';
+	};
+
+	var ok = true;
+
+	var moveGallery = function() {
+
+		if (ok) {
+
+			ok = false;
+
+			var e, l, i, n;
+
+			for (i = 0; i < gCsize; i++) {
+				// current element (e)
+				e = gC[i];
+
+				// get new current element (n)
+				if (e.classList.contains('current')) {
+					if (i == gCsize - 1) n = gC[0];     // is last
+					else n = gC[i + 1];                 // is not last
+				}
+
+				// remove current class from current
+				e.classList.remove('current');
+
+			}
+
+			// add current clast to new current
+			n.classList.add('current');
+
+			// get the left size from new current
+			l = n.style.left;
+
+			console.log(l);
+
+			for (i = gCsize; i--; ) {
+				e = gC[i];
+				e.style.transform = 'translateX(-' + l + ')';
+				e.style.transition = 'all .7s ease 0s';
+			}
+
+			setTimeout(function() {
+				console.log('a');
+				for (i = gCsize; i--; ) {
+					e = gC[i];
+					e.style.transition = '';
+				}
+				ok = true;
+			}, 700);
+
+		}
+
+	};
+
+	defineGalleryLefts();
+	window.addEventListener('resize', defineGalleryLefts);
+
+	document.getElementById('btn').addEventListener('click', moveGallery);
+
+</script>
 
 </body>
 </html>
