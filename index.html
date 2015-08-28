@@ -31,7 +31,12 @@
 				overflow: hidden;
 				position: relative;
 				width: 100%;
-				height: 36em;
+				height: 100vh;
+			}
+
+			.hero .gallery >  h1 {
+				position: absolute;
+				z-index: 2;
 			}
 
 			.hero .gallery .content {
@@ -40,62 +45,139 @@
 				height: 100%;
 			}
 
-			.hero .gallery .content {
-				background-size: cover;
+			.hero .gallery .content .copy {
+				position: absolute;
+				align-items: center;
+				justify-content: center;
+				display: flex;
+				width: 100%;
 				height: 100%;
+				z-index: 1;
+			}
+
+			.hero .gallery .content .copy .inner {
+				max-width: 28em;
+				text-align: center;
+				line-height: 1.2;
+				color: #ffffff;
+			}
+
+			.hero .gallery .content .copy .inner p {
+				font-size: 1.5em;
+			}
+
+			.hero .gallery .content figure {
+				background-size: cover;
+				z-index: 0;
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+
+			.hero .gallery nav,
+			.hero .gallery nav ul,
+			.hero .gallery nav ul li {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.hero .gallery nav {
+				position: absolute;
+				bottom: 1.125em;
+				z-index: 2;
+				width: 100%;
+			}
+
+			.hero .gallery nav ul li {
+				margin: 0 1px;
+				width: 2em;
+				height: 1em;
+			}
+
+			.hero .gallery nav ul li a {
+				height: .5em;
+				width: .5em;
+			}
+
+			.hero .gallery nav.dotnav ul li a {
+				box-sizing: content-box;
+				background-color: #ffffff;
+				border-radius: 50%;
+				outline: none;
+			}
+
+			.hero .gallery nav.dotnav ul li a.current {
+				background: none;
+				border: solid 1px #ffffff;
 			}
 
 		</style>
 
 		<article id="hero-gallery" class="gallery">
 
-			<section class="content red current" style="background-image: url('dist/img/party01.jpeg');">
+			<section class="content blue current">
 
-				<style scoped="scoped">
+				<div class="copy">
 
-					.content {
+					<div class="inner">
 
-					}
+						<h1>Hello World</h1>
 
-				</style>
+					</div>
 
-				<div class="image"></div>
+				</div>
 
-			</section>
-
-			<section class="content blue" style="background-image: url('dist/img/people03.jpeg');">
-
-				<style scoped="scoped">
-
-					.content {
-
-					}
-
-				</style>
-
-				<div class="image"></div>
+				<!--<figure style="background-image: url('dist/img/people03.jpeg');"></figure>-->
 
 			</section>
 
-			<section class="content green" style="background-image: url('dist/img/tools01.jpeg');">
+			<section class="content red">
 
-				<style scoped="scoped">
+				<div class="copy">
 
-					.content {
+					<div class="inner">
 
-					}
+						<h1>Hello World</h1>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
 
-				</style>
+					</div>
 
-				<div class="image"></div>
+				</div>
+
+				<!--<figure style="background-image: url('dist/img/party01.jpeg');"></figure>-->
 
 			</section>
+
+			<section class="content green">
+
+				<div class="copy">
+
+					<div class="inner">
+
+						<h1>Hello World</h1>
+
+					</div>
+
+				</div>
+
+				<!--<figure style="background-image: url('dist/img/tools01.jpeg');"></figure>-->
+
+			</section>
+
+			<nav class="dotnav">
+				<ul>
+					<li><a href="#" class="nav-item"></a></li>
+					<li><a href="#" class="nav-item"></a></li>
+					<li><a href="#" class="nav-item"></a></li>
+				</ul>
+			</nav>
 
 		</article>
 
 	</div>
 
-	<button id="btn">troca</button>
+	<button id="btn" style="display: none">troca</button>
 
 </main>
 
@@ -127,6 +209,12 @@
 	// size of gallery
 	var gCsize = gC.length;
 
+	// gallery nav elements
+	var gN = g.querySelectorAll('.nav-item');
+
+	// allow slide changes
+	var ok = true;
+
 	var defineGalleryLefts = function() {
 		var e, l;
 
@@ -143,7 +231,103 @@
 			gC[i].style.transform = 'translateX(-' + l + ')';
 	};
 
-	var ok = true;
+	var changeGallerySlide = function(time) {
+
+		if (!ok) {
+
+			var e, l, i, n, t;
+
+			if (time) t = time * 100;
+			else t = 600;
+
+			// get new current element
+			for (i = gCsize; i--; ) {
+				if (gC[i].classList.contains('current'))
+					n = gC[i];
+			}
+
+			// get the left size from new current
+			l = n.style.left;
+
+			for (i = gCsize; i--; ) {
+				e = gC[i];
+				e.style.transform = 'translateX(-' + l + ')';
+				e.style.transition = 'all .6s ease 0s';
+			}
+
+			setTimeout(function() {
+				for (i = gCsize; i--; ) {
+					e = gC[i];
+					e.style.transition = '';
+				}
+				ok = true;
+			}, t);
+
+		}
+
+	};
+
+	var nextGallerySlide = function() {
+
+		if (ok) {
+
+			var e, i, n, l;
+
+			ok = false;
+			l = false;  // last
+
+			for (i = gCsize; i--; ) {
+				e = gC[i];
+
+				// get new current element (n)
+				if (e.classList.contains('current')) {
+					if (i < gCsize - 1) n = gC[i + 1];  // is not last
+					else l = true;                      // is last
+				}
+
+				// remove current class from current if not last
+				if (!l) e.classList.remove('current');
+
+			}
+
+			// add current class to new current
+			if (!l) n.classList.add('current');
+
+			changeGallerySlide(2);
+
+		}
+
+	};
+
+	var previousGallerySlide = function() {
+
+		if (ok) {
+
+			ok = false;
+
+			var e, i, n;
+
+			for (i = 0; i < gCsize; i++) {
+				e = gC[i];
+
+				// get new current element (n)
+				if (e.classList.contains('current')) {
+					if (i > 0) n = gC[i - 1];     // is not first
+				}
+
+				// remove current class from current
+				e.classList.remove('current');
+
+			}
+
+			// add current class to new current
+			n.classList.add('current');
+
+			changeGallerySlide(2);
+
+		}
+
+	};
 
 	var moveGallery = function() {
 
@@ -154,7 +338,6 @@
 			var e, l, i, n;
 
 			for (i = 0; i < gCsize; i++) {
-				// current element (e)
 				e = gC[i];
 
 				// get new current element (n)
@@ -168,13 +351,11 @@
 
 			}
 
-			// add current clast to new current
+			// add current class to new current
 			n.classList.add('current');
 
 			// get the left size from new current
 			l = n.style.left;
-
-			console.log(l);
 
 			for (i = gCsize; i--; ) {
 				e = gC[i];
@@ -183,7 +364,6 @@
 			}
 
 			setTimeout(function() {
-				console.log('a');
 				for (i = gCsize; i--; ) {
 					e = gC[i];
 					e.style.transition = '';
@@ -195,10 +375,155 @@
 
 	};
 
+	var ctrlGalleryNav = function() {
+
+		if (ok) {
+
+			ok = false;
+
+			var i, c, n;
+
+			// define current and new current index;
+			for (i = gCsize; i--; ) {
+				if ((gN[i].classList.contains('current')) && (gC[i].classList.contains('current'))) { // is current
+					c = i;
+				}
+
+				if (gN[i] == this) { // is new current
+					n = i;
+				}
+
+				gC[i].classList.remove('current');
+				gN[i].classList.remove('current');
+			}
+
+			gN[n].classList.add('current');
+			gC[n].classList.add('current');
+
+			changeGallerySlide();
+
+		}
+
+	};
+
+	var syncGalleryNav = function() {
+
+		var i, e, l;
+
+		l = 0;
+
+		for (i = gCsize; i--; ) {
+			e = gN[i];
+
+
+			if (gC[i].classList.contains('current')) {
+				gN[i].classList.add('current');
+				l++;
+			}
+
+			e.addEventListener('click', ctrlGalleryNav);
+		}
+
+		if (l > 1) {
+
+			for (i = gCsize; i--; ) {
+				gC[i].classList.remove('current');
+				gN[i].classList.remove('current');
+			}
+
+			gC[0].classList.add('current');
+			gN[0].classList.add('current');
+
+		}
+	};
+
+	syncGalleryNav();
 	defineGalleryLefts();
 	window.addEventListener('resize', defineGalleryLefts);
 
 	document.getElementById('btn').addEventListener('click', moveGallery);
+
+	var move = 0;
+	var start = 0;
+	var left = 0;
+	var last = 0;
+
+	var ctrlGalleryTouchEnd = function() {
+
+		var e, i, c;
+
+		// slide change status
+		c = false;
+
+		move = last - start;
+
+		if (move != 0) {
+			if (move > 0) {
+				if (move > (gWidth / 2)) {  // previous
+					previousGallerySlide();
+					c = true;
+				}
+			} else {
+				if (move < -(gWidth / 2)) { // next
+					nextGallerySlide();
+					c = true;
+				}
+			}
+		}
+
+		if (!c) {
+
+			for (i = gCsize; i--; ) {
+				e = gC[i];
+				e.style.transform = 'translateX(-' + left + 'px)';
+				e.style.transition = 'transform .4s ease 0s';
+			}
+
+			setTimeout(function() {
+				for (i = gCsize; i--; ) {
+					gC[i].style.transition = '';
+				}
+				ok = true;
+			}, 400);
+
+		}
+
+	};
+
+	var ctrlGalleryTouchMove = function(event) {
+		var i, n;
+
+		last = event.touches[0].clientX;
+		move = last - start;
+		n = left - move;
+
+		for (i = gCsize; i--; )
+			gC[i].style.transform = 'translateX(-' + n + 'px)';
+
+	};
+
+	var ctrlGalleryTouchStart = function(event) {
+
+		var i;
+
+		for (i = gCsize; i--; )
+			if (gC[i].classList.contains('current'))
+				left = gWidth * i;
+
+		start = event.touches[0].clientX;
+
+	};
+
+	var addGalleryTouchListener = function() {
+
+		g.addEventListener('touchstart', ctrlGalleryTouchStart, false);
+		g.addEventListener('touchmove', ctrlGalleryTouchMove, false);
+		g.addEventListener('touchend', ctrlGalleryTouchEnd, false);
+		g.addEventListener('touchleave', ctrlGalleryTouchEnd, false);
+
+	};
+
+	addGalleryTouchListener();
 
 </script>
 
